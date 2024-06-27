@@ -1,0 +1,157 @@
+\documentclass[UTF8]{ctexart}
+\usepackage[left=2cm,right=2cm,top=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{threeparttable}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,%设置行号位置none不显示行号
+  %numberstyle=\tiny\courier, %设置行号大小
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  escapeinside=`,%逃逸字符(1左面的键)，用于显示中文例如在代码中`中文...`
+  tabsize=4,
+  extendedchars=false %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+}
+
+\setlength\lineskiplimit{5.25bp}
+\setlength\lineskip{5.25bp}
+
+\title{计算方法第三次编程作业报告}
+\author{崔士强 PB22151743}
+\date{\today}
+
+\bibliographystyle{plain}
+
+\begin{document}
+
+\maketitle
+\section{问题描述}
+给定两个矩阵，利用反幂法求出它们的按模最小特征值和特征向量.
+
+\section{问题分析}
+本程序利用反幂法求解，也即利用幂法求原矩阵逆矩阵的特征向量. 
+另外为了防止出现数值问题，采取规范运算，即在每个迭代中对$X^{(k)}$的每个元素除以$X^{(k)}$的最大分量. 
+计算公式如下所示
+\begin{equation}
+  \begin{cases}
+    Y^{(k)} = X^{(k)}/||X^{(k)}||_\infty \\
+    AX^{(k+1)} = Y^{(k)}
+  \end{cases}
+  k = 0, 1, \cdots
+\end{equation}
+
+其中在求解$X^{(k+1)}$时对$A$使用Doolittle分解，化成$L \cdot U$的形式再求解.
+
+\section{实验结果}
+两个矩阵的计算结果分别如下表所示
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c|ccccc}
+    \hline\hline
+    $k$ & \multicolumn{5}{c}{$Y^{(k)}$} \\
+    \hline
+    0 & 1 & 1 & 1 & 1 & 1 \\
+    1 & 0.5625 & $-1$ & 0.5625 & $-0.107143$ & 0.00446429 \\
+    2 & 0.49103 & $-1$ & 0.658639 & $-0.151467$ & 0.00798141 \\
+    3 & 0.490426 & $-1$ & 0.65975 & $-0.152097$ & 0.00804664 \\
+    \hline\hline 
+  \end{tabular}
+\end{table}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c|ccccc|c}
+    \hline\hline
+    $k$ & \multicolumn{5}{c|}{$X^{(k+1)}$} & $\lambda$\\
+    \hline
+    0 & 630 & $-1120$ & 630 & $-120$ & 5 & 0.000892857 \\
+    1 & 146253 & $-297849$ & 196175 & $-45114.4$ & 2377.25 & $3.35741\times 10^{-6}$ \\
+    2 & 149113 & $-304047$ & 200595 & $-46244.7$ & 2446.56 & $3.28896\times 10^{-6}$ \\
+    3 & 149157 & $-304142$ & 200661 & $-46261.1$ & 2447.54 & $3.28794\times 10^{-6}$ \\
+    \hline\hline 
+  \end{tabular}
+\end{table}
+
+对于$A_1$，经过4轮迭代后得到按模最小特征值为$3.28794\times10^{-6}$.
+
+对应特征向量为$(0.490426, -1, 0.65975, -0.152097, 0.00804664)^T$
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c|cccc}
+    \hline\hline
+    $k$ & \multicolumn{4}{c}{$Y^{(k)}$} \\
+    \hline
+    0 & 1 & 1 & 1 & 1 \\
+    1 & 0 & 1 & 0 & 0.5 \\
+    2 & $-0.111111$ & 1 & $-0.422222$ & 0.622222 \\
+    3 & $-0.115543$ & 1 & $-0.425034$ & 0.624484 \\
+    4 & $-0.115725$ & 1 & $-0.425687$ & 0.624769 \\
+    5 & $-0.115732$ & 1 & $-0.425694$ & 0.624774 \\
+    6 & $-0.115732$ & 1 & $-0.425695$ & 0.624775 \\
+    \hline\hline 
+  \end{tabular}
+\end{table}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{c|cccc|c}
+    \hline\hline
+    $k$ & \multicolumn{4}{c|}{$X^{(k+1)}$} & $\lambda$\\
+    \hline
+    0 & 0 & 2 & 0 & 1 & 0.5 \\
+    1 & $-0.625$ & 5.625 & $-2.375$ & 3.5 & 0.177778 \\
+    2 & $-0.933333$ & 8.07778 & $-3.43333$ & 5.04444 & 0.123796 \\
+    3 & $-0.93621$ & 8.08992 & $-3.44378$ & 5.05433 & 0.123611 \\
+    4 & $-0.936712$ & 8.09382 & $-3.44549$ & 5.05681 & 0.123551 \\
+    5 & $-0.936719$ & 8.09386 & $-3.44551$ & 5.05684 & 0.123551 \\
+    6 & $-0.93672$ & 8.09386 & $-3.44552$ & 5.05684 & 0.12355 \\
+    \hline\hline 
+  \end{tabular}
+\end{table}
+
+对于$A_2$，经过7轮迭代后得到按模最小特征值为$0.12355$.
+
+对应特征向量为$(-0.115732, 1, -0.425695, 0.624775)^T$
+\section{结果分析}
+\subsection{收敛速度}
+对于两个矩阵，迭代次数分别为4和7，另外从按模最小特征值来看，$A_1$远小于$A_2$，因此在这个例子中有“按模最小特征值越接近于0，收敛越快”.
+\subsection{数值问题}
+实验过程中并未出现数值问题. 另外可以注意到，在对$A_1$进行处理时，作规范化处理时如果除以向量的无穷范数，分母数值很小，从而增大误差. 而这个无穷范数实际上是上一轮迭代得到的特征值的倒数，因此可以利用$Y^{(k)} = X^{(k)}\lambda^{(k-1)}$进行迭代.
+\bibliography{math}
+
+\end{document}
+\iffalse
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{name.png}
+    \caption{name}
+\end{figure}
+\fi
+
+\lstset{
+    language=Python,
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+}
